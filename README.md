@@ -99,6 +99,8 @@ npm run test:e2e
 
 Os testes cobrem telefone, duplicidade, CSV com acentos e proteção contra fórmulas, fechamento de inscrições, edições, exclusões, recuperação após reinício, sorteios concorrentes e resultado indisponível antes dos 10 segundos. O teste no navegador percorre o cadastro pelo celular, painel, edição, exportação, contagem real, recarga durante o sorteio, histórico e operação das inscrições. Os testes usam bancos temporários ou em memória, nunca o banco de produção.
 
+O GitHub Actions também monta a imagem Docker de produção, cadastra um participante fictício e recria o container com o mesmo volume para verificar a persistência.
+
 ## Persistência e backup
 
 Todo o estado fica em `/app/data/tawper.sqlite` e nos arquivos auxiliares SQLite no **mesmo volume**. Não remova o volume ao atualizar o serviço. A exportação CSV preserva os leads, mas não substitui um backup do banco com o histórico dos sorteios.
