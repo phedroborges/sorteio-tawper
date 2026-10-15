@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="theme-color" content="#151e38">
+  <title>Painel do evento | Tawper</title>
+  <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/style.css">
+  <script type="module" src="/admin.js"></script>
+</head>
+<body class="admin-page">
+  <aside class="sidebar">
+    <img class="brand-white" src="/assets/tawper.svg" width="162" height="42" alt="Tawper">
+    <p class="sidebar-label">GESTÃO DO EVENTO</p>
+    <nav aria-label="Painel"><button class="nav-item active" data-tab="participants" aria-current="page"><span aria-hidden="true">▦</span> Participantes</button><button class="nav-item" data-tab="raffle"><span aria-hidden="true">✧</span> Sorteio</button><button class="nav-item" data-tab="history"><span aria-hidden="true">↺</span> Histórico</button></nav>
+    <div class="sidebar-bottom"><span class="status-dot"></span> SORTEIO TAWPER<span>Kit churrasco · Evento</span></div>
+  </aside>
+  <main class="admin-main">
+    <header class="admin-header"><div><p class="section-index">PAINEL DO EVENTO</p><h1 id="panel-title">Participantes</h1></div><div class="header-actions"><span class="sync-status" id="sync-status" role="status">Conectando...</span><button class="button button-outline small" id="refresh-button" aria-label="Atualizar cadastros">↻ Atualizar</button></div></header>
+    <div id="admin-error" class="form-message" role="alert" hidden></div>
+    <section class="stats-grid" aria-label="Resumo do evento"><div class="stat-card"><span>Inscrições confirmadas</span><strong id="stat-total">—</strong><small>Um cadastro por telefone</small></div><div class="stat-card"><span>Disponíveis para sortear</span><strong id="stat-eligible">—</strong><small>Ganhadores anteriores não se repetem</small></div><div class="stat-card"><span>Empresas representadas</span><strong id="stat-companies">—</strong><small>Conexões feitas neste evento</small></div></section>
+    <section id="tab-participants" class="tab-content">
+      <div class="table-heading"><div><h2>Lista de participantes</h2><p>Cadastros atualizados automaticamente.</p></div><button id="registration-toggle" class="button button-outline small" disabled>Carregando...</button></div>
+      <div class="table-card"><div class="table-toolbar"><label class="search-wrap"><span aria-hidden="true">⌕</span><input type="search" id="search" placeholder="Buscar nome, telefone ou empresa" aria-label="Buscar participantes"></label><a class="button button-outline small" id="export-link" href="/api/admin/export.csv">↓ Exportar CSV</a></div>
+        <div class="table-scroll"><table><thead><tr><th>Participante</th><th>Telefone</th><th>Empresa / cargo</th><th>Inscrição</th><th><span class="sr-only">Ações</span></th></tr></thead><tbody id="participants-body"></tbody></table></div>
+        <div id="table-empty" class="empty-state" hidden><span aria-hidden="true">▦</span><h3>Nenhuma inscrição por aqui.</h3><p>Os cadastros aparecerão nesta lista assim que forem confirmados.</p></div>
+        <div class="table-pagination"><span id="table-count">Carregando participantes...</span><div><button id="previous-page" class="icon-button" aria-label="Página anterior">←</button><span id="page-label"></span><button id="next-page" class="icon-button" aria-label="Próxima página">→</button></div></div>
+      </div>
+    </section>
+    <section id="tab-raffle" class="tab-content" hidden>
+      <div class="raffle-intro"><div><p class="eyebrow"><span></span> HORA DE CONHECER O GANHADOR</p><h2>Uma conexão.<br>Um belo churrasco.</h2><p>Contagem regressiva de 10 segundos.<br>Uma chance igual para cada participante disponível.</p><button id="start-draw" class="button button-red" disabled>Iniciar sorteio <span aria-hidden="true">↗</span></button><p class="raffle-note">Novos cadastros após o início entram no próximo sorteio.</p></div><img src="/assets/kit-churrasco.webp" width="480" height="360" alt="Kit churrasco do sorteio"></div>
+      <div class="draw-explanation"><span>01 <strong>Prepare a tela</strong><small>Use o modo tela cheia para apresentar.</small></span><span>02 <strong>Inicie a contagem</strong><small>Os nomes passam pela tela por 10 segundos.</small></span><span>03 <strong>Conheça o ganhador</strong><small>O resultado fica registrado no histórico.</small></span></div>
+    </section>
+    <section id="tab-history" class="tab-content" hidden><div class="table-heading"><div><h2>Resultados dos sorteios</h2><p>Ganhadores e quantidade de participantes em cada rodada.</p></div></div><div id="history-list"></div></section>
+    <footer class="admin-footer">Tawper · Mangueiras e conexões<span>Gestão do sorteio</span></footer>
+  </main>
+  <dialog id="edit-dialog" class="modal"><form id="edit-form" novalidate><div class="modal-heading"><h2>Editar participante</h2><button type="button" class="icon-button" data-close aria-label="Fechar edição">×</button></div><input name="id" type="hidden"><div class="field"><label for="edit-name">Nome completo</label><input id="edit-name" name="name" maxlength="100" required></div><div class="field"><label for="edit-phone">Telefone com DDD</label><input id="edit-phone" name="phone" type="tel" maxlength="22" required></div><div class="field"><label for="edit-role">Cargo</label><input id="edit-role" name="role" maxlength="100" required></div><div class="field"><label for="edit-company">Empresa</label><input id="edit-company" name="company" maxlength="120" required></div><p id="edit-error" class="form-message" role="alert" hidden></p><div class="modal-actions"><button type="button" class="button button-outline" data-close>Cancelar</button><button type="submit" class="button button-red">Salvar alterações</button></div></form></dialog>
+  <dialog id="confirm-dialog" class="modal"><div class="modal-heading"><h2 id="confirm-title"></h2><button class="icon-button" data-close aria-label="Fechar">×</button></div><p id="confirm-description"></p><p id="confirm-error" class="form-message" role="alert" hidden></p><div class="modal-actions"><button class="button button-outline" data-close>Cancelar</button><button class="button button-red" id="confirm-action">Confirmar</button></div></dialog>
+  <dialog id="draw-stage" class="draw-stage" aria-labelledby="stage-heading"><div class="stage-top"><img src="/assets/tawper.svg" class="brand-white" width="180" height="47" alt="Tawper"><div><button class="stage-control" id="fullscreen-button">⛶ Tela cheia</button><button class="stage-control" id="close-stage" aria-label="Voltar ao painel">×</button></div></div><div class="stage-content"><p class="eyebrow" id="stage-kicker">SORTEIO DO EVENTO</p><h2 id="stage-heading">O kit churrasco vai para...</h2><div class="countdown" id="countdown">10</div><div class="rolling-name" id="rolling-name" aria-hidden="true">Prepare-se</div><div class="names-window" id="names-window" aria-hidden="true"><div id="names-track"></div></div><div id="winner-content" hidden><div class="winner-label">PARABÉNS!</div><h3 id="winner-name"></h3><p id="winner-company"></p><span class="winner-number" id="winner-number"></span><button class="button button-white" id="winner-back">Voltar ao painel ↗</button></div><p id="stage-status" class="stage-status" role="status" aria-live="polite"></p></div><div class="stage-bottom"><span id="stage-count"></span><span>KIT CHURRASCO TAWPER</span></div><div class="confetti" id="confetti" aria-hidden="true"></div></dialog>
+  <div class="toast" id="toast" role="status" hidden></div>
+</body>
+</html>

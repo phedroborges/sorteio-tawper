@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#151e38">
+  <meta name="description" content="Cadastre-se e concorra ao kit churrasco Tawper no fim do evento.">
+  <title>Concorra ao kit churrasco | Tawper</title>
+  <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
+  <link rel="preload" href="/assets/manrope.ttf" as="font" type="font/ttf" crossorigin>
+  <link rel="stylesheet" href="/style.css">
+  <script type="module" src="/capture.js"></script>
+</head>
+<body class="capture-page">
+  <main class="capture-layout">
+    <section class="prize-panel" aria-labelledby="prize-title">
+      <a href="/" class="brand" aria-label="Tawper — início"><img src="/assets/tawper.svg" width="174" height="45" alt="Tawper mangueiras e conexões"></a>
+      <div class="prize-copy">
+        <p class="eyebrow"><span></span> SORTEIO DO EVENTO</p>
+        <h1 id="prize-title">O próximo churrasco<br>pode ser <em>por nossa conta.</em></h1>
+        <p class="prize-description">Cadastre-se e concorra a este kit churrasco<br class="desktop-only"> no fim do evento.</p>
+      </div>
+      <div class="prize-image-wrap">
+        <div class="prize-ring" aria-hidden="true"></div>
+        <img class="prize-image" src="/assets/kit-churrasco.webp" width="960" height="720" alt="Kit churrasco com tábua de madeira, conjunto de facas, garfo e garra para carne" fetchpriority="high">
+      </div>
+      <div class="prize-bottom"><span>TAWPER</span><span>Conexões que vão além do trabalho.</span></div>
+    </section>
+    <section class="registration-panel" aria-labelledby="form-title">
+      <div class="registration-content">
+        <div id="registration-view">
+          <p class="section-index">01 <span>/ PREENCHA E PARTICIPE</span></p>
+          <h2 id="form-title">Esse kit pode ser seu.</h2>
+          <p class="form-intro">Deixe seus dados para participar do sorteio.</p>
+          <form id="registration-form" novalidate>
+            <div class="field"><label for="name">Nome completo</label><input id="name" name="name" autocomplete="name" maxlength="100" placeholder="Seu nome e sobrenome" required aria-describedby="name-error"><span class="field-error" id="name-error"></span></div>
+            <div class="field"><label for="phone">Telefone com DDD</label><input id="phone" name="phone" type="tel" inputmode="tel" autocomplete="tel-national" maxlength="22" placeholder="(11) 99999-9999" required aria-describedby="phone-error"><span class="field-error" id="phone-error"></span></div>
+            <div class="field-row">
+              <div class="field"><label for="role">Cargo</label><input id="role" name="role" autocomplete="organization-title" maxlength="100" placeholder="Seu cargo" required aria-describedby="role-error"><span class="field-error" id="role-error"></span></div>
+              <div class="field"><label for="company">Empresa que representa</label><input id="company" name="company" autocomplete="organization" maxlength="120" placeholder="Nome da empresa" required aria-describedby="company-error"><span class="field-error" id="company-error"></span></div>
+            </div>
+            <div class="honeypot" aria-hidden="true"><label for="website">Site</label><input id="website" name="website" tabindex="-1" autocomplete="off"></div>
+            <label class="consent"><input type="checkbox" id="consent" name="consent" required aria-describedby="consent-error"><span>Concordo com o uso destes dados pela Tawper para minha participação e contato sobre este sorteio.</span></label>
+            <span class="field-error" id="consent-error"></span>
+            <p class="form-message" id="form-message" role="alert" hidden></p>
+            <button class="button button-red submit-button" id="submit-button" type="submit"><span>Confirmar participação</span><span aria-hidden="true">↗</span></button>
+            <p class="form-footnote">Uma inscrição por telefone. Sorteio no fim do evento.</p>
+          </form>
+        </div>
+        <div id="success-view" class="success-view" hidden>
+          <div class="success-check" aria-hidden="true">✓</div>
+          <p class="eyebrow dark-eyebrow">PARTICIPAÇÃO CONFIRMADA</p>
+          <h2><span id="success-name"></span>,<br>você está concorrendo!</h2>
+          <p>Agora é só acompanhar o sorteio<br>no fim do evento. Boa sorte!</p>
+          <div class="ticket"><span>SUA INSCRIÇÃO</span><strong id="ticket-number"></strong><span>KIT CHURRASCO TAWPER</span></div>
+        </div>
+        <div id="closed-view" class="closed-view" hidden><p class="eyebrow dark-eyebrow">SORTEIO TAWPER</p><h2>Inscrições encerradas.</h2><p>Obrigado por estar com a gente.<br>Acompanhe o sorteio durante o evento!</p></div>
+        <noscript><p class="form-message">Ative o JavaScript do navegador para confirmar sua participação.</p></noscript>
+      </div>
+      <footer class="capture-footer">Tawper · Mangueiras e conexões</footer>
+    </section>
+  </main>
+</body>
+</html>

@@ -1,0 +1,14 @@
+services:
+  tawper:
+    build: .
+    ports:
+      - "3000:3000"
+    environment:
+      PORT: "3000"
+      DATABASE_PATH: /app/data/tawper.sqlite
+      TRUST_PROXY: "1"
+    volumes:
+      - tawper-data:/app/data
+    restart: unless-stopped
+volumes:
+  tawper-data:

@@ -1,0 +1,13 @@
+node_modules/
+.env
+.env.*
+!.env.example
+data/
+*.sqlite*
+*.db*
+test-results/
+playwright-report/
+.DS_Store
+*.log
+.vercel/
+artifacts/
