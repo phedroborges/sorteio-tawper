@@ -25,7 +25,7 @@ try {
   await healthy();
   const response = await fetch(`${base}/api/registrations`, {
     method: 'POST', headers: { 'Content-Type': 'application/json', 'X-Tawper-Request': '1' },
-    body: JSON.stringify({ name: 'Pessoa Teste Docker', phone: '11987654321', role: 'Teste', company: 'Empresa Fictícia', consent: true })
+    body: JSON.stringify({ name: 'Pessoa Teste Docker', phone: '11987654321', role: 'Teste', company: 'Empresa Fictícia', isCustomer: 'no', wantsTechnicalSupport: 'no', consent: true })
   });
   assert.equal(response.status, 201, 'o usuário não root precisa escrever no volume');
   docker('stop', resource);
