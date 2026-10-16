@@ -19,9 +19,13 @@ test('celular → cadastro → tabela → edição → CSV → sorteio real de 1
   await page.getByLabel('Cargo', { exact: true }).fill('Engenheira');
   await page.getByLabel('Empresa que representa').fill('Usina Exemplo');
   await page.getByRole('button', { name: 'Continuar' }).click();
+  await expect(page.locator('#consent-error')).not.toBeEmpty();
+  await expect(page.locator('#step-2')).toBeHidden();
+  await page.locator('#consent').check();
+  await page.getByRole('button', { name: 'Continuar' }).click();
   // Passo 2: perguntas objetivas obrigatórias.
   await expect(page.locator('#step-1')).toBeHidden();
-  await expect(page.locator('#steps li.active')).toHaveText(/Perguntas/);
+  await expect(page.getByRole('heading', { name: 'Falta pouco.' })).toBeVisible();
   await page.screenshot({ path: 'artifacts/perguntas-mobile.png', fullPage: true });
   await page.getByRole('button', { name: 'Voltar e corrigir meus dados' }).click();
   await expect(page.getByLabel('Nome completo')).toHaveValue('Ana Participante');
@@ -29,14 +33,12 @@ test('celular → cadastro → tabela → edição → CSV → sorteio real de 1
   await page.getByRole('button', { name: 'Confirmar participação' }).click();
   await expect(page.locator('#isCustomer-error')).toHaveText('Informe se você já é nosso cliente.');
   await expect(page.locator('#wantsTechnicalSupport-error')).toHaveText('Informe se deseja receber um atendimento técnico.');
-  await expect(page.locator('#consent-error')).not.toBeEmpty();
   await expect(page.locator('#success-view')).toBeHidden();
   await page.getByRole('group', { name: 'Já é nosso cliente?' }).getByRole('radio', { name: 'Sim' }).check();
   await page.getByRole('group', { name: 'Deseja receber um atendimento técnico?' }).getByRole('radio', { name: 'Não' }).check();
-  await page.locator('#consent').check();
   await page.getByRole('button', { name: 'Confirmar participação' }).click();
   // Passo 3: confirmação e contatos.
-  await expect(page.locator('#steps li.active')).toHaveText(/Confirmação/);
+  await expect(page.locator('#steps')).toHaveCount(0);
   await expect(page.locator('#success-view')).toBeVisible();
   await expect(page.locator('.whatsapp-contacts a')).toHaveCount(3);
   for (const number of ['5517991252896', '5517982302700', '5517981640028']) await expect(page.locator(`.whatsapp-contacts a[href="https://wa.me/${number}"]`)).toBeVisible();
@@ -54,10 +56,10 @@ test('celular → cadastro → tabela → edição → CSV → sorteio real de 1
   await page.getByLabel('Telefone com DDD').fill('11987654321');
   await page.getByLabel('Cargo', { exact: true }).fill('Engenheira');
   await page.getByLabel('Empresa que representa').fill('Usina Exemplo');
+  await page.locator('#consent').check();
   await page.getByRole('button', { name: 'Continuar' }).click();
   await page.getByRole('group', { name: 'Já é nosso cliente?' }).getByRole('radio', { name: 'Não' }).check();
   await page.getByRole('group', { name: 'Deseja receber um atendimento técnico?' }).getByRole('radio', { name: 'Sim' }).check();
-  await page.locator('#consent').check();
   await page.getByRole('button', { name: 'Confirmar participação' }).click();
   await expect(page.locator('#step-1')).toBeVisible();
   await expect(page.locator('#phone-error')).toHaveText('Este telefone já está cadastrado.');

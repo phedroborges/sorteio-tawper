@@ -60,7 +60,8 @@ export function createApp(store, { publicOrigin = '', trustProxy = 0 } = {}) {
     res.sendFile('admin.html', { root: publicDir });
   });
   app.use(express.static(publicDir, { extensions: false, maxAge: '1h', setHeaders: (res, path) => {
-    if (path.endsWith('.html')) res.set('Cache-Control', 'no-cache');
+    // HTML, CSS and JS revalidate on every load so a deploy never mixes old and new files.
+    if (/\.(html|css|js)$/.test(path)) res.set('Cache-Control', 'no-cache');
     if (path.endsWith('admin.html')) res.set('X-Robots-Tag', 'noindex, nofollow');
   } }));
   app.use((req, res) => res.status(404).send('Página não encontrada.'));

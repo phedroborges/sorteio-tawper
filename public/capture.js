@@ -2,7 +2,7 @@ import { $, api, phoneMask, localErrors } from './shared.js';
 
 const form = $('#registration-form');
 const button = $('#submit-button');
-const stepOneFields = ['name', 'phone', 'role', 'company'];
+const stepOneFields = ['name', 'phone', 'role', 'company', 'consent'];
 let step = 1;
 phoneMask($('#phone'));
 function clearErrors() {
@@ -27,12 +27,7 @@ function goTo(next) {
   $('#step-2').hidden = step !== 2;
   $('#registration-view').hidden = step === 3;
   $('#success-view').hidden = step !== 3;
-  document.querySelectorAll('#steps li').forEach((item, index) => {
-    item.classList.toggle('active', index + 1 === step);
-    item.classList.toggle('done', index + 1 < step);
-    index + 1 === step ? item.setAttribute('aria-current', 'step') : item.removeAttribute('aria-current');
-  });
-  $('#steps').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  $('.registration-content').scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
 const pick = (errors, keys) => Object.fromEntries(Object.entries(errors).filter(([key]) => keys.includes(key)));
 form.addEventListener('submit', async event => {
@@ -41,13 +36,13 @@ form.addEventListener('submit', async event => {
   const data = Object.fromEntries(new FormData(form));
   data.consent = $('#consent').checked;
   const errors = localErrors(data);
+  if (!data.consent) errors.consent = 'Confirme o uso dos dados para participar.';
   if (step === 1) {
     const stepErrors = pick(errors, stepOneFields);
     if (Object.keys(stepErrors).length) return showErrors(stepErrors);
     goTo(2);
     return $('#questions-title').focus({ preventScroll: true });
   }
-  if (!data.consent) errors.consent = 'Confirme o uso dos dados para participar.';
   if (Object.keys(errors).length) return showErrors(errors);
   button.disabled = true;
   button.firstElementChild.textContent = 'Confirmando...';
@@ -69,5 +64,5 @@ form.addEventListener('submit', async event => {
 });
 $('#back-button').addEventListener('click', () => { clearErrors(); goTo(1); $('#name').focus({ preventScroll: true }); });
 api('/api/event').then(status => {
-  if (!status.registrationOpen) { $('#registration-view').hidden = true; $('#steps').hidden = true; $('#closed-view').hidden = false; }
+  if (!status.registrationOpen) { $('#registration-view').hidden = true; $('#closed-view').hidden = false; }
 }).catch(() => { /* Submission reports connectivity errors and preserves the form. */ });

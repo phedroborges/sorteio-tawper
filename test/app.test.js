@@ -141,6 +141,7 @@ test('integração HTTP: cadastro, admin, CSV, consentimento e proteção de ori
   const home = await (await fetch(url)).text();
   assert.ok(!home.includes('/admin'));
   assert.equal((await fetch(url + '/admin')).headers.get('x-robots-tag'), 'noindex, nofollow');
+  for (const file of ['/style.css', '/capture.js', '/shared.js']) assert.equal((await fetch(url + file)).headers.get('cache-control'), 'no-cache');
   assert.equal((await send('/api/registrations', { ...person(), consent: false })).status, 422);
   assert.equal((await send('/api/registrations', { ...person(), isCustomer: undefined, consent: true })).status, 422);
   assert.equal((await send('/api/registrations', { ...person(), wantsTechnicalSupport: undefined, consent: true })).status, 422);

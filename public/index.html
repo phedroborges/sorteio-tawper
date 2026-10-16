@@ -28,11 +28,6 @@
     </section>
     <section class="registration-panel" aria-labelledby="form-title">
       <div class="registration-content">
-        <ol class="steps" id="steps" aria-label="Etapas da participação">
-          <li class="active" aria-current="step"><span>1</span>Seus dados</li>
-          <li><span>2</span>Perguntas</li>
-          <li><span>3</span>Confirmação</li>
-        </ol>
         <div id="registration-view">
           <form id="registration-form" novalidate>
             <div class="form-step" id="step-1" data-step="1">
@@ -45,6 +40,8 @@
                 <div class="field"><label for="role">Cargo</label><input id="role" name="role" autocomplete="organization-title" maxlength="100" placeholder="Seu cargo" required aria-describedby="role-error"><span class="field-error" id="role-error"></span></div>
                 <div class="field"><label for="company">Empresa que representa</label><input id="company" name="company" autocomplete="organization" maxlength="120" placeholder="Nome da empresa" required aria-describedby="company-error"><span class="field-error" id="company-error"></span></div>
               </div>
+              <label class="consent"><input type="checkbox" id="consent" name="consent" required aria-describedby="consent-error"><span>Concordo com o uso destes dados pela Tawper para minha participação e contato sobre este sorteio.</span></label>
+              <span class="field-error" id="consent-error"></span>
               <button class="button button-red submit-button" id="next-button" type="submit"><span>Continuar</span><span aria-hidden="true">→</span></button>
               <p class="form-footnote">Uma inscrição por telefone. Sorteio no fim do evento.</p>
             </div>
@@ -55,8 +52,6 @@
               <fieldset class="choice-field" aria-describedby="isCustomer-error"><legend>Já é nosso cliente?</legend><div class="choice-options"><label class="choice"><input type="radio" name="isCustomer" value="yes" required><span>Sim</span></label><label class="choice"><input type="radio" name="isCustomer" value="no"><span>Não</span></label></div><span class="field-error" id="isCustomer-error"></span></fieldset>
               <fieldset class="choice-field" aria-describedby="wantsTechnicalSupport-error"><legend>Deseja receber um atendimento técnico?</legend><div class="choice-options"><label class="choice"><input type="radio" name="wantsTechnicalSupport" value="yes" required><span>Sim</span></label><label class="choice"><input type="radio" name="wantsTechnicalSupport" value="no"><span>Não</span></label></div><span class="field-error" id="wantsTechnicalSupport-error"></span></fieldset>
               <div class="honeypot" aria-hidden="true"><label for="website">Site</label><input id="website" name="website" tabindex="-1" autocomplete="off"></div>
-              <label class="consent"><input type="checkbox" id="consent" name="consent" required aria-describedby="consent-error"><span>Concordo com o uso destes dados pela Tawper para minha participação e contato sobre este sorteio.</span></label>
-              <span class="field-error" id="consent-error"></span>
               <p class="form-message" id="form-message" role="alert" hidden></p>
               <button class="button button-red submit-button" id="submit-button" type="submit"><span>Confirmar participação</span><span aria-hidden="true">↗</span></button>
               <button class="back-button" id="back-button" type="button">← Voltar e corrigir meus dados</button>
