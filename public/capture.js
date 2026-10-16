@@ -10,10 +10,10 @@ function clearErrors() {
 }
 function showErrors(fields, message) {
   for (const [key, value] of Object.entries(fields)) {
-    const input = form.elements.namedItem(key);
+    const inputs = [...form.elements].filter(input => input.name === key);
     const output = $(`#${key}-error`);
     if (output) output.textContent = value;
-    if (input) input.setAttribute('aria-invalid', 'true');
+    inputs.forEach(input => input.setAttribute('aria-invalid', 'true'));
   }
   if (message) { $('#form-message').textContent = message; $('#form-message').hidden = false; }
   const first = form.querySelector('[aria-invalid="true"]');

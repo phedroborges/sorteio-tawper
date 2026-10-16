@@ -17,11 +17,21 @@ test('celular → cadastro → tabela → edição → CSV → sorteio real de 1
   await page.getByLabel('Empresa que representa').fill('Usina Exemplo');
   await page.locator('#consent').check();
   await page.getByRole('button', { name: 'Confirmar participação' }).click();
+  await expect(page.locator('#isCustomer-error')).toHaveText('Informe se você já é nosso cliente.');
+  await expect(page.locator('#wantsTechnicalSupport-error')).toHaveText('Informe se deseja receber um atendimento técnico.');
+  await expect(page.locator('#success-view')).toBeHidden();
+  await page.getByRole('group', { name: 'Já é nosso cliente?' }).getByRole('radio', { name: 'Sim' }).check();
+  await page.getByRole('group', { name: 'Deseja receber um atendimento técnico?' }).getByRole('radio', { name: 'Não' }).check();
+  await page.getByRole('button', { name: 'Confirmar participação' }).click();
   await expect(page.locator('#success-view')).toBeVisible();
+  await expect(page.locator('.whatsapp-contacts a')).toHaveCount(3);
+  for (const number of ['5517991252896', '5517982302700', '5517981640028']) await expect(page.locator(`.whatsapp-contacts a[href="https://wa.me/${number}"]`)).toBeVisible();
+  expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
+  await page.screenshot({ path: 'artifacts/confirmacao-mobile.png', fullPage: true });
   await expect(page.locator('#ticket-number')).toContainText('0001');
   // Additional synthetic participants only in this isolated, in-memory test server.
   for (const [name, phone] of [['Bruno Participante', '11987654322'], ['Carla Participante', '11987654323']]) {
-    const response = await request.post('/api/registrations', { headers: { 'X-Tawper-Request': '1' }, data: { name, phone, role: 'Gestor', company: 'Empresa Exemplo', consent: true } });
+    const response = await request.post('/api/registrations', { headers: { 'X-Tawper-Request': '1' }, data: { name, phone, role: 'Gestor', company: 'Empresa Exemplo', isCustomer: 'no', wantsTechnicalSupport: 'yes', consent: true } });
     expect(response.status()).toBe(201);
   }
   await page.setViewportSize({ width: 1440, height: 1000 });

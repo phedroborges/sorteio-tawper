@@ -8,7 +8,7 @@ import { createStore, DRAW_DURATION } from '../server/store.js';
 import { createApp } from '../server/app.js';
 import { validateParticipant, toCsv } from '../server/validation.js';
 
-const person = (index = 0) => ({ name: ['Ana Teste', 'Bruno Teste', 'Carla Teste'][index] || `Pessoa Teste ${index}`, phone: `+551198765${String(1000 + index)}`, role: 'Engenharia', company: 'Empresa de Teste' });
+const person = (index = 0) => ({ name: ['Ana Teste', 'Bruno Teste', 'Carla Teste'][index] || `Pessoa Teste ${index}`, phone: `+551198765${String(1000 + index)}`, role: 'Engenharia', company: 'Empresa de Teste', isCustomer: true, wantsTechnicalSupport: false });
 function fixture(t, options = {}) { const store = createStore(':memory:', options); t.after(() => store.close()); return store; }
 
 test('valida telefone brasileiro, normaliza E.164 e rejeita dados inválidos', () => {
@@ -19,6 +19,15 @@ test('valida telefone brasileiro, normaliza E.164 e rejeita dados inválidos', (
   for (const phone of ['123', '(00) 99999-9999', '+1 202 555 0123', 'ligue 11987651000']) assert.throws(() => validateParticipant({ ...person(), phone }), { status: 422 });
   assert.throws(() => validateParticipant({ ...person(), name: 'Ana' }), { status: 422 });
   assert.throws(() => validateParticipant({ ...person(), company: '<script>' }), { status: 422 });
+});
+test('as duas perguntas são obrigatórias no cadastro e opcionais na edição do painel', () => {
+  const { isCustomer, wantsTechnicalSupport, ...base } = person();
+  assert.throws(() => validateParticipant(base), error => error.status === 422 && Boolean(error.fields.isCustomer) && Boolean(error.fields.wantsTechnicalSupport));
+  assert.throws(() => validateParticipant({ ...base, isCustomer: 'talvez', wantsTechnicalSupport: 'no' }), { status: 422 });
+  const data = validateParticipant({ ...base, isCustomer: 'yes', wantsTechnicalSupport: 'no' });
+  assert.equal(data.isCustomer, true);
+  assert.equal(data.wantsTechnicalSupport, false);
+  assert.equal(validateParticipant(base, { requireAnswers: false }).isCustomer, undefined);
 });
 test('um cadastro por telefone, mesmo com formatações distintas', t => {
   const store = fixture(t);
@@ -116,6 +125,10 @@ test('CSV tem BOM, caracteres especiais preservados e proteção contra fórmula
   assert.ok(csv.includes('"\'=1+2"'));
   assert.ok(csv.includes('"Usina; São João"'));
   assert.ok(csv.includes('31/12/1969'));
+  const answers = toCsv([{ number: 2, name: 'Ana Teste', phone: '+5511987651000', role: 'Gestora', company: 'Usina', isCustomer: true, wantsTechnicalSupport: false, createdAt: 0, won: false }, { number: 3, name: 'Bruno Teste', phone: '+5511987651001', role: 'Gestor', company: 'Usina', isCustomer: null, wantsTechnicalSupport: null, createdAt: 0, won: false }]);
+  assert.ok(answers.includes('"Já é cliente";"Deseja atendimento técnico"'));
+  assert.ok(answers.includes('"Usina";"Sim";"Não"'));
+  assert.ok(answers.includes('"Usina";"Não informado";"Não informado"'));
 });
 test('integração HTTP: cadastro, admin, CSV, consentimento e proteção de origem', async t => {
   const store = fixture(t);
@@ -129,6 +142,8 @@ test('integração HTTP: cadastro, admin, CSV, consentimento e proteção de ori
   assert.ok(!home.includes('/admin'));
   assert.equal((await fetch(url + '/admin')).headers.get('x-robots-tag'), 'noindex, nofollow');
   assert.equal((await send('/api/registrations', { ...person(), consent: false })).status, 422);
+  assert.equal((await send('/api/registrations', { ...person(), isCustomer: undefined, consent: true })).status, 422);
+  assert.equal((await send('/api/registrations', { ...person(), wantsTechnicalSupport: undefined, consent: true })).status, 422);
   assert.equal((await send('/api/registrations', { ...person(), consent: true }, { Origin: 'https://outra-origem.test' })).status, 403);
   assert.equal((await send('/api/registrations', { ...person(), consent: true })).status, 201);
   assert.equal((await send('/api/registrations', { ...person(), consent: true })).status, 409);

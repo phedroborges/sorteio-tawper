@@ -26,6 +26,7 @@ function switchTab(tab) {
 }
 document.querySelectorAll('[data-tab]').forEach(el => el.addEventListener('click', () => switchTab(el.dataset.tab)));
 
+const answer = value => value == null ? 'Não informado' : value ? 'Sim' : 'Não';
 function filtered() {
   const normalize = value => String(value).normalize('NFD').replace(/\p{Diacritic}/gu, '').toLocaleLowerCase('pt-BR');
   const q = normalize(query.trim());
@@ -37,7 +38,7 @@ function renderTable() {
   const pages = Math.max(1, Math.ceil(rows.length / pageSize));
   page = Math.min(page, pages);
   const visible = rows.slice((page - 1) * pageSize, page * pageSize);
-  $('#participants-body').innerHTML = visible.map(p => `<tr><td><div class="person"><span class="avatar">${esc(p.name.split(/\s+/u).map(n => n[0]).slice(0, 2).join(''))}</span><div><strong>${esc(p.name)}</strong><small>${p.won ? '<span class="winner-badge">Sorteado</span>' : 'Nº ' + String(p.number).padStart(4, '0')}</small></div></div></td><td class="phone-cell">${esc(formatPhone(p.phone))}</td><td><strong class="company-cell">${esc(p.company)}</strong><small>${esc(p.role)}</small></td><td class="date-cell">${esc(dateTime(p.createdAt))}</td><td><div class="row-actions"><button class="text-button" data-edit="${esc(p.id)}" ${state.activeDraw ? 'disabled' : ''} aria-label="Editar ${esc(p.name)}">Editar</button><button class="text-button delete-button" data-delete="${esc(p.id)}" ${state.activeDraw ? 'disabled' : ''} aria-label="Excluir ${esc(p.name)}">Excluir</button></div></td></tr>`).join('');
+  $('#participants-body').innerHTML = visible.map(p => `<tr><td><div class="person"><span class="avatar">${esc(p.name.split(/\s+/u).map(n => n[0]).slice(0, 2).join(''))}</span><div><strong>${esc(p.name)}</strong><small>${p.won ? '<span class="winner-badge">Sorteado</span>' : 'Nº ' + String(p.number).padStart(4, '0')}</small></div></div></td><td class="phone-cell">${esc(formatPhone(p.phone))}</td><td><strong class="company-cell">${esc(p.company)}</strong><small>${esc(p.role)}</small></td><td class="answer-cell"><small>Cliente: <b>${answer(p.isCustomer)}</b></small><small>Atendimento técnico: <b>${answer(p.wantsTechnicalSupport)}</b></small></td><td class="date-cell">${esc(dateTime(p.createdAt))}</td><td><div class="row-actions"><button class="text-button" data-edit="${esc(p.id)}" ${state.activeDraw ? 'disabled' : ''} aria-label="Editar ${esc(p.name)}">Editar</button><button class="text-button delete-button" data-delete="${esc(p.id)}" ${state.activeDraw ? 'disabled' : ''} aria-label="Excluir ${esc(p.name)}">Excluir</button></div></td></tr>`).join('');
   $('#table-empty').hidden = rows.length > 0;
   $('#table-empty h3').textContent = query ? 'Nenhum cadastro encontrado.' : 'Nenhuma inscrição por aqui.';
   $('#table-empty p').textContent = query ? 'Tente buscar por outro nome, telefone ou empresa.' : 'Os cadastros aparecerão nesta lista assim que forem confirmados.';
@@ -123,7 +124,7 @@ $('#edit-form').addEventListener('submit', async event => {
   const button = event.target.querySelector('[type="submit"]');
   button.disabled = true;
   try {
-    const errors = localErrors(data);
+    const errors = localErrors(data, { requireAnswers: false });
     if (Object.keys(errors).length) throw new Error(Object.values(errors).join(' '));
     await api(`/api/admin/participants/${data.id}`, { method: 'PATCH', body: JSON.stringify(data) });
     $('#edit-dialog').close();

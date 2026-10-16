@@ -19,6 +19,8 @@ export function createStore(path, { now = Date.now, choose = randomInt } = {}) {
       phone TEXT NOT NULL UNIQUE,
       role TEXT NOT NULL,
       company TEXT NOT NULL,
+      is_customer INTEGER CHECK (is_customer IN (0, 1)),
+      wants_technical_support INTEGER CHECK (wants_technical_support IN (0, 1)),
       created_at INTEGER NOT NULL,
       updated_at INTEGER NOT NULL
     );
@@ -41,6 +43,13 @@ export function createStore(path, { now = Date.now, choose = randomInt } = {}) {
     try { const result = fn(); db.exec('COMMIT'); return result; }
     catch (error) { db.exec('ROLLBACK'); throw error; }
   };
+  // Keep existing registrations intact: unanswered legacy fields remain NULL, not "No".
+  transaction(() => {
+    const columns = new Set(db.prepare('PRAGMA table_info(participants)').all().map(column => column.name));
+    for (const column of ['is_customer', 'wants_technical_support']) {
+      if (!columns.has(column)) db.exec(`ALTER TABLE participants ADD COLUMN ${column} INTEGER CHECK (${column} IN (0, 1))`);
+    }
+  });
   const settle = () => db.prepare("UPDATE draws SET status = 'completed' WHERE status = 'running' AND reveal_at <= ?").run(now());
   const running = () => db.prepare("SELECT * FROM draws WHERE status = 'running'").get();
   const allDraws = () => db.prepare('SELECT * FROM draws ORDER BY started_at DESC, rowid DESC').all();
@@ -48,7 +57,7 @@ export function createStore(path, { now = Date.now, choose = randomInt } = {}) {
     const records = allDraws().filter(d => d.status === 'completed').map(d => JSON.parse(d.pool)[d.winner_index]);
     return { phones: new Set(records.map(p => p.phone)), ids: new Set(records.map(p => p.id)) };
   };
-  const mapParticipant = (p, previous) => ({ id: p.id, number: p.number, name: p.name, phone: p.phone, role: p.role, company: p.company, createdAt: p.created_at, won: previous.phones.has(p.phone) || previous.ids.has(p.id) });
+  const mapParticipant = (p, previous) => ({ id: p.id, number: p.number, name: p.name, phone: p.phone, role: p.role, company: p.company, isCustomer: p.is_customer == null ? null : Boolean(p.is_customer), wantsTechnicalSupport: p.wants_technical_support == null ? null : Boolean(p.wants_technical_support), createdAt: p.created_at, won: previous.phones.has(p.phone) || previous.ids.has(p.id) });
   const participants = (query = '') => {
     const phones = winners();
     const q = query.trim().normalize('NFD').replace(/\p{Diacritic}/gu, '').toLocaleLowerCase('pt-BR');
@@ -82,10 +91,11 @@ export function createStore(path, { now = Date.now, choose = randomInt } = {}) {
     register(data) {
       return transaction(() => {
         if (!registrationOpen()) throw new AppError(409, 'As inscrições estão encerradas.');
+        if (typeof data.isCustomer !== 'boolean' || typeof data.wantsTechnicalSupport !== 'boolean') throw new AppError(422, 'Responda às duas perguntas para participar.');
         const id = randomUUID();
         const timestamp = now();
         let inserted;
-        try { inserted = db.prepare('INSERT INTO participants(id,name,phone,role,company,created_at,updated_at) VALUES (?,?,?,?,?,?,?)').run(id, data.name, data.phone, data.role, data.company, timestamp, timestamp); }
+        try { inserted = db.prepare('INSERT INTO participants(id,name,phone,role,company,is_customer,wants_technical_support,created_at,updated_at) VALUES (?,?,?,?,?,?,?,?,?)').run(id, data.name, data.phone, data.role, data.company, Number(data.isCustomer), Number(data.wantsTechnicalSupport), timestamp, timestamp); }
         catch (err) { uniqueError(err); }
         return { id, number: Number(inserted.lastInsertRowid), firstName: data.name.split(/\s+/u)[0] };
       });
@@ -112,7 +122,7 @@ export function createStore(path, { now = Date.now, choose = randomInt } = {}) {
       return transaction(() => {
         mutationAllowed();
         if (!db.prepare('SELECT id FROM participants WHERE id = ?').get(id)) throw new AppError(404, 'Cadastro não encontrado.');
-        try { db.prepare('UPDATE participants SET name=?,phone=?,role=?,company=?,updated_at=? WHERE id=?').run(data.name, data.phone, data.role, data.company, now(), id); }
+        try { db.prepare('UPDATE participants SET name=?,phone=?,role=?,company=?,is_customer=COALESCE(?,is_customer),wants_technical_support=COALESCE(?,wants_technical_support),updated_at=? WHERE id=?').run(data.name, data.phone, data.role, data.company, data.isCustomer == null ? null : Number(data.isCustomer), data.wantsTechnicalSupport == null ? null : Number(data.wantsTechnicalSupport), now(), id); }
         catch (err) { uniqueError(err); }
         return { ok: true };
       });

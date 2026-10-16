@@ -17,7 +17,7 @@
       <a href="/" class="brand" aria-label="Tawper — início"><img src="/assets/tawper.svg" width="174" height="45" alt="Tawper mangueiras e conexões"></a>
       <div class="prize-copy">
         <p class="eyebrow"><span></span> SORTEIO DO EVENTO</p>
-        <h1 id="prize-title">Seu próximo churrasco<br>pode ter um toque especial<br>com um presente<br><em>da nossa parte!</em></h1>
+        <h1 id="prize-title">Seu próximo churrasco <br>pode ter um toque especial <br>com um presente <br><em>da nossa parte!</em></h1>
         <p class="prize-description">Cadastre-se e concorra a este kit churrasco<br class="desktop-only"> no fim do evento.</p>
       </div>
       <div class="prize-image-wrap">
@@ -39,6 +39,8 @@
               <div class="field"><label for="role">Cargo</label><input id="role" name="role" autocomplete="organization-title" maxlength="100" placeholder="Seu cargo" required aria-describedby="role-error"><span class="field-error" id="role-error"></span></div>
               <div class="field"><label for="company">Empresa que representa</label><input id="company" name="company" autocomplete="organization" maxlength="120" placeholder="Nome da empresa" required aria-describedby="company-error"><span class="field-error" id="company-error"></span></div>
             </div>
+            <fieldset class="choice-field" aria-describedby="isCustomer-error"><legend>Já é nosso cliente?</legend><div class="choice-options"><label class="choice"><input type="radio" name="isCustomer" value="yes" required><span>Sim</span></label><label class="choice"><input type="radio" name="isCustomer" value="no"><span>Não</span></label></div><span class="field-error" id="isCustomer-error"></span></fieldset>
+            <fieldset class="choice-field" aria-describedby="wantsTechnicalSupport-error"><legend>Deseja receber um atendimento técnico?</legend><div class="choice-options"><label class="choice"><input type="radio" name="wantsTechnicalSupport" value="yes" required><span>Sim</span></label><label class="choice"><input type="radio" name="wantsTechnicalSupport" value="no"><span>Não</span></label></div><span class="field-error" id="wantsTechnicalSupport-error"></span></fieldset>
             <div class="honeypot" aria-hidden="true"><label for="website">Site</label><input id="website" name="website" tabindex="-1" autocomplete="off"></div>
             <label class="consent"><input type="checkbox" id="consent" name="consent" required aria-describedby="consent-error"><span>Concordo com o uso destes dados pela Tawper para minha participação e contato sobre este sorteio.</span></label>
             <span class="field-error" id="consent-error"></span>
@@ -53,6 +55,14 @@
           <h2><span id="success-name"></span>,<br>você está concorrendo!</h2>
           <p>Agora é só acompanhar o sorteio<br>no fim do evento. Boa sorte!</p>
           <div class="ticket"><span>SUA INSCRIÇÃO</span><strong id="ticket-number"></strong><span>KIT CHURRASCO TAWPER</span></div>
+          <div class="whatsapp-contacts">
+            <p class="whatsapp-title">Quer falar com a Tawper? Chame no WhatsApp:</p>
+            <ul>
+              <li><a href="https://wa.me/5517991252896" target="_blank" rel="noopener" aria-label="Falar com Murilo no WhatsApp, (17) 9 9125-2896"><svg class="whatsapp-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2zm0 18.2c-1.5 0-3-.4-4.3-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8-.2-.1-.4-.1-.6.1l-.8 1c-.1.2-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.3-.4.2-.4.6-1.3.1-.2 0-.3 0-.4l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5a1 1 0 0 0-.7.3 3 3 0 0 0-.9 2.2 5.2 5.2 0 0 0 1.1 2.7c.1.2 1.9 2.9 4.6 4 1.7.7 2.4.8 3.2.7.5-.1 1.5-.6 1.8-1.2.2-.6.2-1.1.1-1.2l-.4-.3z"/></svg><span><strong>Murilo</strong><small>São Paulo · (17) 9 9125-2896</small></span><span class="whatsapp-arrow" aria-hidden="true">↗</span></a></li>
+              <li><a href="https://wa.me/5517982302700" target="_blank" rel="noopener" aria-label="Falar com Nilton no WhatsApp, (17) 9 8230-2700"><svg class="whatsapp-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2zm0 18.2c-1.5 0-3-.4-4.3-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8-.2-.1-.4-.1-.6.1l-.8 1c-.1.2-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.3-.4.2-.4.6-1.3.1-.2 0-.3 0-.4l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5a1 1 0 0 0-.7.3 3 3 0 0 0-.9 2.2 5.2 5.2 0 0 0 1.1 2.7c.1.2 1.9 2.9 4.6 4 1.7.7 2.4.8 3.2.7.5-.1 1.5-.6 1.8-1.2.2-.6.2-1.1.1-1.2l-.4-.3z"/></svg><span><strong>Nilton</strong><small>São Paulo · (17) 9 8230-2700</small></span><span class="whatsapp-arrow" aria-hidden="true">↗</span></a></li>
+              <li><a href="https://wa.me/5517981640028" target="_blank" rel="noopener" aria-label="Falar com Douglas no WhatsApp, (17) 9 8164-0028"><svg class="whatsapp-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2zm0 18.2c-1.5 0-3-.4-4.3-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8-.2-.1-.4-.1-.6.1l-.8 1c-.1.2-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.3-.4.2-.4.6-1.3.1-.2 0-.3 0-.4l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5a1 1 0 0 0-.7.3 3 3 0 0 0-.9 2.2 5.2 5.2 0 0 0 1.1 2.7c.1.2 1.9 2.9 4.6 4 1.7.7 2.4.8 3.2.7.5-.1 1.5-.6 1.8-1.2.2-.6.2-1.1.1-1.2l-.4-.3z"/></svg><span><strong>Douglas</strong><small>Alagoas · (17) 9 8164-0028</small></span><span class="whatsapp-arrow" aria-hidden="true">↗</span></a></li>
+            </ul>
+          </div>
         </div>
         <div id="closed-view" class="closed-view" hidden><p class="eyebrow dark-eyebrow">SORTEIO TAWPER</p><h2>Inscrições encerradas.</h2><p>Obrigado por estar com a gente.<br>Acompanhe o sorteio durante o evento!</p></div>
         <noscript><p class="form-message">Ative o JavaScript do navegador para confirmar sua participação.</p></noscript>

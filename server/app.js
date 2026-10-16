@@ -45,7 +45,7 @@ export function createApp(store, { publicOrigin = '', trustProxy = 0 } = {}) {
     if (typeof req.body?.registrationOpen !== 'boolean') throw new AppError(422, 'Informe o estado das inscrições.');
     res.json(store.setOpen(req.body.registrationOpen));
   });
-  app.patch('/api/admin/participants/:id', (req, res) => res.json(store.update(req.params.id, validateParticipant(req.body))));
+  app.patch('/api/admin/participants/:id', (req, res) => res.json(store.update(req.params.id, validateParticipant(req.body, { requireAnswers: false }))));
   app.delete('/api/admin/participants/:id', (req, res) => res.json(store.remove(req.params.id)));
   app.post('/api/admin/draws', (req, res) => {
     const key = req.body?.requestKey;

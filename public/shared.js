@@ -33,12 +33,16 @@ export async function api(path, options = {}) {
   } finally { clearTimeout(timeout); }
 }
 export const dateTime = value => new Intl.DateTimeFormat('pt-BR', { dateStyle: 'short', timeStyle: 'short', timeZone: 'America/Sao_Paulo' }).format(new Date(value));
-export function localErrors(data) {
+export function localErrors(data, { requireAnswers = true } = {}) {
   const errors = {};
   if (!/^\p{L}.*\s+\p{L}/u.test(data.name.trim())) errors.name = 'Informe seu nome e sobrenome.';
   const phone = data.phone.replace(/\D/g, '');
   if (phone.length < 10 || phone.length > 13) errors.phone = 'Informe um telefone válido com DDD.';
   if (data.role.trim().length < 2) errors.role = 'Informe seu cargo.';
   if (data.company.trim().length < 2) errors.company = 'Informe a empresa que você representa.';
+  if (requireAnswers) {
+    if (!['yes', 'no'].includes(data.isCustomer)) errors.isCustomer = 'Informe se você já é nosso cliente.';
+    if (!['yes', 'no'].includes(data.wantsTechnicalSupport)) errors.wantsTechnicalSupport = 'Informe se deseja receber um atendimento técnico.';
+  }
   return errors;
 }
