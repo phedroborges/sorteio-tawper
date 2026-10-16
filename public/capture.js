@@ -1,4 +1,4 @@
-import { $, api, phoneMask, localErrors } from './shared.js';
+import { $, api, phoneMask, localErrors } from './shared.js?v=20261016c';
 
 const form = $('#registration-form');
 const button = $('#submit-button');
